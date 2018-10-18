@@ -9,7 +9,9 @@ def main(name_length):
 
     for word in words:
         sorted_word = ''.join(sorted(word))
-        word_map[sorted_word] = word
+        if sorted_word not in word_map:
+            word_map[sorted_word] = []
+        word_map[sorted_word].append(word)
 
     with open('people.txt') as people_file:
         people = [person.strip() for person in people_file.readlines()]
@@ -19,7 +21,8 @@ def main(name_length):
         if len(last_name) == name_length and 'e' in last_name:
             converted_last_name = ''.join(sorted([letter for letter in last_name.lower() if letter != 'e'] + ['f', 'i']))
             if converted_last_name in word_map:
-                print('{} -> {}'.format(person, word_map[converted_last_name]))
+                for word in word_map[converted_last_name]:
+                    print('{} -> {}'.format(person, word))
 
 
 if __name__ == '__main__':
