@@ -32,7 +32,8 @@ def main():
                 sys.stdout.write('Processing <{}>...'.format(url))
                 r = requests.get(url)
                 tree = ET.fromstring(r.text)
-                persons = tree.xpath('//div/h2[span[@id="Births"]]/following-sibling::ul[1]/li')
+                persons = tree.xpath('//div/h2[span[@id="Births"]]'
+                                     '/following-sibling::ul[1]/li')
                 for person in persons:
                     text = ''.join(person.xpath('./descendant::text()'))
                     m = re.match(PERSON_PATTERN, text)
