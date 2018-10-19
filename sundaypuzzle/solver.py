@@ -3,7 +3,7 @@ import sundaypuzzle.wordloader as wordloader
 from argparse import ArgumentParser
 
 
-def main(name_length):
+def main(name_length, drop_every_e):
     words = wordloader.load_words()
     word_map = {}
 
@@ -17,9 +17,14 @@ def main(name_length):
         people = [person.strip() for person in people_file.readlines()]
 
     for person in people:
-        last_name = person.split()[-1]
+        last_name = person.split()[-1].lower()
         if len(last_name) == name_length and 'e' in last_name:
-            converted_last_name = ''.join(sorted([letter for letter in last_name.lower() if letter != 'e'] + ['f', 'i']))
+            if drop_every_e:
+                converted_last_name = ''.join(sorted([letter for letter in last_name if letter != 'e'] + ['f', 'i']))
+            else:
+                first_e_index = last_name.index('e')
+                converted_last_name = ''.join(sorted(last_name[0:first_e_index] + last_name[first_e_index + 1:] + 'fi'))
+
             if converted_last_name in word_map:
                 for word in word_map[converted_last_name]:
                     print('{} -> {}'.format(person, word))
@@ -27,6 +32,7 @@ def main(name_length):
 
 if __name__ == '__main__':
     parser = ArgumentParser()
-    parser.add_argument('--name-length', type=int, default=6)
+    parser.add_argument('--name-length', type=int, default=7)
+    parser.add_argument('--drop-every-e', action='store_true')
     args = parser.parse_args()
-    main(args.name_length)
+    main(args.name_length, args.drop_every_e)
